@@ -102,7 +102,7 @@
        return response.json();
     })
     .then(function(json) {
-      console.log(json.nlmRxImages);
+      // console.log(json.nlmRxImages);
       json.nlmRxImages.forEach(function(image) {
         insertDrugIntoDocument(image.imageUrl, image.name, 'resultdisplay');
       })
