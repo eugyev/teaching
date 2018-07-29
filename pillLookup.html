@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <title>Pill Lookup</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
+  </head>
+
+  <body class='container'>
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Pill Lookup</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+
+    <div id="example" class='row'>
+      <h3>Example: Lipitor</h3>
+      <div id='exampleDiv'>
+
+      </div>
+    </div>
+    <hr />
+    <div id="user-input" class='row'>
+      <h3> Enter Drug Name To See Images</h3>
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Enter Drug Name" id="drugName" />
+      </div>
+      <button class='btn btn-primary' id='search'>Make Magic Happen</button>
+      <div id='resultdisplay' />
+    </div>
+
+
+  </body>
+
+</html>
+
+
+<script>
+  function insertDrugIntoDocument(drugUrl, drugName, locationId) {
+    const string = `<div class="col-xs-6 col-md-3">
+            <a href="${drugUrl}" class="thumbnail">
+              <img src="${drugUrl}">
+              <p>${drugName}</p>
+            </a>
+          </div>`
+    const elem = document.getElementById(locationId);
+    elem.insertAdjacentHTML('afterEnd', string);
+    return;
+  }
+
+  // what if we made these into a list and did the insertions
+
+  const examples = [
+    { imageUrl: 'https://rxpillimage.nlm.nih.gov/RxImage/image/images/gallery/original/00378-3950-05_RXNAVIMAGE10_D33DE98F.jpg', name: 'atorvastatin 10 MG Oral Tablet', },
+    { imageUrl: 'https://rxpillimage.nlm.nih.gov/RxImage/image/images/gallery/original/55111-0122-05_RXNAVIMAGE10_C53DE2CF.jpg', name: 'atorvastatin 20 MG Oral Tablet' }
+  ];
+
+  examples.forEach(function(example) {
+    insertDrugIntoDocument(example.imageUrl, example.name, 'exampleDiv')
+  })
+
+  function getDrugName() {
+    const inputBox = document.getElementById('drugName');
+    return inputBox.value;
+  }
+
+  const searchButton = document.getElementById('search');
+  searchButton.addEventListener('click', function() {
+    const url = 'https://rximage.nlm.nih.gov/api/rximage/1/rxnav?name=' + getDrugName();
+    fetch(url)
+    .then(function(response) {
+       return response.json();
+    })
+    .then(function(json) {
+      console.log(json.nlmRxImages);
+      json.nlmRxImages.forEach(function(image) {
+        insertDrugIntoDocument(image.imageUrl, image.name, 'resultdisplay');
+      })
+      // let's do stuff with json
+    })
+  })
+
+
+</script>
